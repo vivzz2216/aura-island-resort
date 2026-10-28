@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA — Somewhere beyond ordinary</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><circle cx='20' cy='20' r='6' fill='%2373ded6'/><circle cx='20' cy='20' r='14' fill='none' stroke='%2373ded6' stroke-width='1.5' stroke-dasharray='3 3'/></svg>">
+
+  <!-- Google Fonts: Cormorant Garamond, Plus Jakarta Sans, Cinzel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="editorial.css">
+</head>
+<body>
+
+  <!-- Ambient Sound Layer (Web Audio API) -->
+  <div class="audio-widget" id="audioToggle" title="Toggle Ambient Ocean Breeze">
+    <div class="sound-bars">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <span class="audio-label">Sound</span>
+  </div>
+
+  <!-- Background Wallpaper Switcher (4K Generated vs Reference Original) -->
+  <div class="bg-switcher" id="bgSwitcher" title="Switch Hero Background">
+    <button class="bg-btn active" data-bg="generated">4K Island</button>
+    <button class="bg-btn" data-bg="original">Original</button>
+  </div>
+
+  <!-- Main Fixed Navigation Bar -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <!-- Left: Brand Logo & Wordmark -->
+      <a href="#hero" class="brand-logo" aria-label="AURA Resort Home">
+        <div class="logo-symbol">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="sun-icon">
+            <!-- Center ring and subtle inner circle -->
+            <circle cx="24" cy="24" r="5.5" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.9"/>
+            <circle cx="24" cy="24" r="2" fill="currentColor" fill-opacity="0.7"/>
+            <!-- Radiating Sunburst Rays -->
+            <g stroke="currentColor" stroke-width="1.1" stroke-linecap="round" opacity="0.85">
+              <!-- 24 rays -->
+              <line x1="24" y1="7" x2="24" y2="13"/>
+              <line x1="24" y1="35" x2="24" y2="41"/>
+              <line x1="7" y1="24" x2="13" y2="24"/>
+              <line x1="35" y1="24" x2="41" y2="24"/>
+              
+              <line x1="12" y1="12" x2="16.2" y2="16.2"/>
+              <line x1="31.8" y1="31.8" x2="36" y2="36"/>
+              <line x1="36" y1="12" x2="31.8" y2="16.2"/>
+              <line x1="16.2" y1="31.8" x2="12" y2="36"/>
+              
+              <line x1="17.8" y1="8.5" x2="19.5" y2="14.2"/>
+              <line x1="28.5" y1="33.8" x2="30.2" y2="39.5"/>
+              <line x1="8.5" y1="30.2" x2="14.2" y2="28.5"/>
+              <line x1="33.8" y1="19.5" x2="39.5" y2="17.8"/>
+
+              <line x1="30.2" y1="8.5" x2="28.5" y2="14.2"/>
+              <line x1="19.5" y1="33.8" x2="17.8" y2="39.5"/>
+              <line x1="8.5" y1="17.8" x2="14.2" y2="19.5"/>
+              <line x1="33.8" y1="28.5" x2="39.5" y2="30.2"/>
+
+              <line x1="10.2" y1="18.2" x2="15.2" y2="20.2"/>
+              <line x1="32.8" y1="27.8" x2="37.8" y2="29.8"/>
+              <line x1="18.2" y1="37.8" x2="20.2" y2="32.8"/>
+              <line x1="27.8" y1="15.2" x2="29.8" y2="10.2"/>
+
+              <line x1="10.2" y1="29.8" x2="15.2" y2="27.8"/>
+              <line x1="32.8" y1="20.2" x2="37.8" y2="18.2"/>
+              <line x1="29.8" y1="37.8" x2="27.8" y2="32.8"/>
+              <line x1="20.2" y1="15.2" x2="18.2" y2="10.2"/>
+            </g>
+          </svg>
+        </div>
+        <span class="logo-text">A U R A</span>
+      </a>
+
+      <!-- Center: Navigation Links -->
+      <nav class="nav-links">
+        <a href="#the-island" class="nav-item">The island</a>
+        <a href="#your-stay" class="nav-item">Your stay</a>
+        <a href="#experiences" class="nav-item">Experiences</a>
+        <a href="#gastronomy" class="nav-item nav-extra">Gastronomy</a>
+      </nav>
+
+      <!-- Right: Action Button -->
+      <div class="header-actions">
+        <button class="btn-escape" id="openEscapeModal">
+          <span>Plan your escape</span>
+          <span class="btn-arrow">→</span>
+        </button>
+        <button class="mobile-menu-toggle" id="menuToggle" aria-label="Toggle Menu">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Drawer -->
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-content">
+      <a href="#the-island" class="drawer-link">The island</a>
+      <a href="#your-stay" class="drawer-link">Your stay</a>
+      <a href="#experiences" class="drawer-link">Experiences</a>
+      <a href="#gastronomy" class="drawer-link">Gastronomy</a>
+      <a href="#reserve" class="drawer-link">Reservations</a>
+      <button class="btn-escape drawer-btn" id="drawerEscapeBtn">Plan your escape →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 1: HERO VIEW (Exact Replica) -->
+  <section class="hero-section" id="hero">
+    <!-- Background Image Layer -->
+    <div class="hero-bg" id="heroBg">
+      <div class="hero-overlay"></div>
+      <div class="water-shimmer"></div>
+    </div>
+
+    <!-- Left Vertical Index Pagination (01 / 06 ↓) -->
+    <div class="vertical-indicator" id="verticalIndicator">
+      <span class="ind-num ind-current" id="indCurrent">01</span>
+      <div class="ind-line"></div>
+      <span class="ind-num ind-total">06</span>
+      <a href="#the-island" class="ind-arrow" aria-label="Scroll to next section">↓</a>
+    </div>
+
+    <!-- Hero Content Container -->
+    <div class="hero-container">
+      <div class="hero-text-block">
+        <h1 class="hero-title">
+          <span class="reveal-line"><span class="reveal-inner">Somewhere</span></span>
+          <span class="reveal-line"><span class="reveal-inner">beyond ordinary.</span></span>
+        </h1>
+        <p class="hero-subtitle">An island. A feeling. A world of your own.</p>
+      </div>
+    </div>
+
+    <!-- Bottom Center Booking Glass Bar -->
+    <div class="booking-bar-wrapper">
+      <div class="booking-bar" id="bookingBar">
+        <!-- Field 1: Arrival -->
+        <div class="booking-field" id="arrivalField" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Select arrival date">
+          <div class="field-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="icon-svg">
+              <rect x="3" y="4" width="18" height="18" rx="3" ry="3"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+              <circle cx="8" cy="14" r="1" fill="currentColor"/>
+              <circle cx="12" cy="14" r="1" fill="currentColor"/>
+              <circle cx="16" cy="14" r="1" fill="currentColor"/>
+              <circle cx="8" cy="18" r="1" fill="currentColor"/>
+              <circle cx="12" cy="18" r="1" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="field-text">
+            <span class="field-label">Arrival</span>
+            <span class="field-value" id="arrivalValue">Apr 24, 2025</span>
+          </div>
+          <div class="field-chevron">
+            <svg viewBox="0 0 20 20" fill="currentColor" class="chevron-svg">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="field-divider"></div>
+
+        <!-- Field 2: Departure -->
+        <div class="booking-field" id="departureField" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Select departure date">
+          <div class="field-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="icon-svg">
+              <rect x="3" y="4" width="18" height="18" rx="3" ry="3"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+              <circle cx="8" cy="14" r="1" fill="currentColor"/>
+              <circle cx="12" cy="14" r="1" fill="currentColor"/>
+              <circle cx="16" cy="14" r="1" fill="currentColor"/>
+              <circle cx="8" cy="18" r="1" fill="currentColor"/>
+              <circle cx="12" cy="18" r="1" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="field-text">
+            <span class="field-label">Departure</span>
+            <span class="field-value" id="departureValue">May 1, 2025</span>
+          </div>
+          <div class="field-chevron">
+            <svg viewBox="0 0 20 20" fill="currentColor" class="chevron-svg">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="field-divider"></div>
+
+        <!-- Field 3: Guests -->
+        <div class="booking-field" id="guestsField" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Select number of guests">
+          <div class="field-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="icon-svg">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="field-text">
+            <span class="field-label">Guests</span>
+            <span class="field-value" id="guestsValue">2 adults</span>
+          </div>
+          <div class="field-chevron">
+            <svg viewBox="0 0 20 20" fill="currentColor" class="chevron-svg">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Field 4: CTA Button -->
+        <button class="btn-find-stay" id="btnFindStay">
+          <span>Find your stay</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+
+      <!-- Date Picker Popover Modal -->
+      <div class="glass-popover calendar-popover" id="datePickerPopover">
+        <div class="popover-header">
+          <span class="popover-title" id="calendarTitle">Select Dates</span>
+          <button class="popover-close" id="closeDatePicker">✕</button>
+        </div>
+        <div class="calendar-month-selector">
+          <button class="cal-nav" id="prevMonth">‹</button>
+          <span class="cal-month-name" id="currentMonthLabel">April 2025</span>
+          <button class="cal-nav" id="nextMonth">›</button>
+        </div>
+        <div class="calendar-grid">
+          <span class="cal-day-header">Su</span>
+          <span class="cal-day-header">Mo</span>
+          <span class="cal-day-header">Tu</span>
+          <span class="cal-day-header">We</span>
+          <span class="cal-day-header">Th</span>
+          <span class="cal-day-header">Fr</span>
+          <span class="cal-day-header">Sa</span>
+          <!-- Dynamic Days injected by JS -->
+          <div class="cal-days-body" id="calDaysBody"></div>
+        </div>
+        <div class="calendar-footer">
+          <span class="cal-range-hint">7 nights selected: Apr 24 – May 1</span>
+          <button class="btn-popover-apply" id="applyDates">Apply Dates</button>
+        </div>
+      </div>
+
+      <!-- Guests Picker Popover Modal -->
+      <div class="glass-popover guests-popover" id="guestsPickerPopover">
+        <div class="popover-header">
+          <span class="popover-title">Guests & Suites</span>
+          <button class="popover-close" id="closeGuestsPicker">✕</button>
+        </div>
+        <div class="guest-counter-row">
+          <div class="counter-label">
+            <span class="counter-name">Adults</span>
+            <span class="counter-desc">Ages 13 and above</span>
+          </div>
+          <div class="counter-ctrls">
+            <button class="counter-btn" id="adultDec">−</button>
+            <span class="counter-value" id="adultCount">2</span>
+            <button class="counter-btn" id="adultInc">+</button>
+          </div>
+        </div>
+        <div class="guest-counter-row">
+          <div class="counter-label">
+            <span class="counter-name">Children</span>
+            <span class="counter-desc">Ages 2 to 12</span>
+          </div>
+          <div class="counter-ctrls">
+            <button class="counter-btn" id="childDec">−</button>
+            <span class="counter-value" id="childCount">0</span>
+            <button class="counter-btn" id="childInc">+</button>
+          </div>
+        </div>
+        <div class="guest-counter-row">
+          <div class="counter-label">
+            <span class="counter-name">Villa Suites</span>
+            <span class="counter-desc">Dedicated residences</span>
+          </div>
+          <div class="counter-ctrls">
+            <button class="counter-btn" id="suiteDec">−</button>
+            <span class="counter-value" id="suiteCount">1</span>
+            <button class="counter-btn" id="suiteInc">+</button>
+          </div>
+        </div>
+        <div class="popover-actions">
+          <button class="btn-popover-apply" id="applyGuests">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom-Right Floating Villa Teaser Card -->
+    <div class="hero-teaser-widget" id="teaserCard">
+      <div class="teaser-card-frame">
+        <img src="assets/villa-bedroom.jpg" alt="Water Villa Ocean View" class="teaser-img" id="teaserImg">
+        <div class="teaser-shimmer"></div>
+      </div>
+      <a href="#your-stay" class="teaser-link" id="teaserLink">
+        <span>Wake up to the ocean</span>
+        <span class="teaser-arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+
+  <!-- SECTION 2: THE ISLAND — an editorial arrival -->
+  <section class="section island-section editorial-section" id="the-island" data-index="02">
+
+    <div class="section-container island-editorial">
+      <div class="island-intro"><h2 class="section-title">A sanctuary formed by nature,<br><em>refined by human touch.</em></h2><p class="island-location">North Malé Atoll · Maldives</p><a class="aura-text-link" href="#your-stay">Find your place on the island <span>↗</span></a></div>
+      <div class="island-notes"><article><h3>Living House Reef</h3><p>Direct access to an ancient, flourishing coral barrier ecosystem with resident hawksbill sea turtles and gentle manta rays.</p></article><article><h3>Biophilic Architecture</h3><p>Naturally sourced teak, alang-alang thatch, and local stone. Spaces designed to breathe with the ocean breeze.</p></article><article><h3>Total Seclusion</h3><p>Only 24 private overwater and beachfront sanctuaries. Unmatched silence, stillness, and space, with a dedicated Island Thakuru.</p></article></div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: YOUR STAY -->
+  <section class="section stay-section editorial-section" id="your-stay" data-index="03">
+    <div class="section-container">
+      <div class="section-header">
+        <h2 class="section-title">Residences woven into the lagoon.</h2>
+        <p class="section-subtext">Each residence is oriented toward either the sun's first golden dawn or its theatrical crimson descent across the infinite Indian Ocean.</p>
+      </div>
+
+      <!-- Villa Tabs -->
+      <div class="villa-tabs">
+        <button class="villa-tab active" data-filter="all">All Sanctuaries</button>
+        <button class="villa-tab" data-filter="water">Overwater Villas</button>
+        <button class="villa-tab" data-filter="beach">Beachfront Palaces</button>
+      </div>
+
+      <!-- Villa Showcase Cards -->
+      <div class="villas-grid">
+        <!-- Villa 1 -->
+        <div class="villa-card" data-category="water">
+          <div class="villa-img-wrapper">
+            <img src="assets/villa-bedroom.jpg" alt="Sunset Overwater Villa" class="villa-img" loading="lazy">
+            <span class="villa-badge">Most Revered</span>
+          </div>
+          <div class="villa-info">
+            <div class="villa-top">
+              <h3 class="villa-title">Sunset Overwater Villa with Private Pool</h3>
+              <span class="villa-price">From $1,950 <em>/ night</em></span>
+            </div>
+            <p class="villa-desc">High-vaulted timber ceilings, wrap-around sundeck, glass floor viewing panel, catamaran overwater net, and private infinity plunge pool.</p>
+            <div class="villa-features">
+              <span>285 m² / 3,067 ft²</span>
+              <span>King Bed</span>
+              <span>Ocean Sunset Facing</span>
+            </div>
+            <button class="btn-villa-explore" data-villa="sunset-overwater">View Suite Details →</button>
+          </div>
+        </div>
+
+        <!-- Villa 2 -->
+        <div class="villa-card" data-category="water">
+          <div class="villa-img-wrapper">
+            <img src="assets/villa-bedroom.jpg" alt="Ocean-view villa interior" class="villa-img" loading="lazy">
+            <span class="villa-badge">Lagoon Edge</span>
+          </div>
+          <div class="villa-info">
+            <div class="villa-top">
+              <h3 class="villa-title">Grand Two-Bedroom Ocean Lagoon Residence</h3>
+              <span class="villa-price">From $3,400 <em>/ night</em></span>
+            </div>
+            <p class="villa-desc">Perched at the outermost tip of the private jetty. Features 360-degree panoramic ocean views, private dining sala, and personal sommelier cellar.</p>
+            <div class="villa-features">
+              <span>540 m² / 5,812 ft²</span>
+              <span>2 King Suites</span>
+              <span>Butler Concierge</span>
+            </div>
+            <button class="btn-villa-explore" data-villa="grand-lagoon">View Suite Details →</button>
+          </div>
+        </div>
+
+        <!-- Villa 3 -->
+        <div class="villa-card" data-category="beach">
+          <div class="villa-img-wrapper">
+            <img src="assets/wellness.jpg" alt="Beachfront Coral Sanctuary" class="villa-img" loading="lazy">
+            <span class="villa-badge">Secluded Beach</span>
+          </div>
+          <div class="villa-info">
+            <div class="villa-top">
+              <h3 class="villa-title">Beachfront Coral Sanctuary with Garden Oasis</h3>
+              <span class="villa-price">From $2,250 <em>/ night</em></span>
+            </div>
+            <p class="villa-desc">Enclosed within lush tropical coconut palms with direct access to powdery white sands. Outdoor lava-stone bath and private garden pool.</p>
+            <div class="villa-features">
+              <span>380 m² / 4,090 ft²</span>
+              <span>Direct Shoreline</span>
+              <span>Tropical Spa Bath</span>
+            </div>
+            <button class="btn-villa-explore" data-villa="beachfront-coral">View Suite Details →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SECTION 4: BESPOKE EXPERIENCES -->
+  <section class="section exp-section editorial-section" id="experiences" data-index="04">
+    <div class="section-container">
+      <div class="section-header">
+        <h2 class="section-title">Moments that linger long after<br><em>the tides retreat.</em></h2>
+      </div>
+
+      <div class="exp-grid">
+        <!-- Exp 1 -->
+        <div class="exp-card large-card">
+          <div class="exp-img-box">
+            <img src="assets/dining.jpg" alt="Twilight Sandbank Dining" class="exp-img" loading="lazy">
+            <div class="exp-overlay"></div>
+          </div>
+          <div class="exp-content">
+            <h3 class="exp-title">Castaway Sandbank Private Dinner</h3>
+            <p class="exp-desc">Whisked away by wooden tender to an uninhabited sandspit surrounded by whispering turquoise waters. A 6-course bespoke tasting menu illuminated by lanterns under the Milky Way.</p>
+            <a class="exp-cta" href="#gastronomy">Discover the evening →</a>
+          </div>
+        </div>
+
+        <!-- Exp 2 -->
+        <div class="exp-card">
+          <div class="exp-img-box">
+            <img src="assets/wellness.jpg" alt="Overwater Wellness" class="exp-img" loading="lazy">
+            <div class="exp-overlay"></div>
+          </div>
+          <div class="exp-content">
+            <h3 class="exp-title">Lagoon Sound Immersion & Ayurveda</h3>
+            <p class="exp-desc">Tibetan singing bowls tuned to the resonance of ocean waves, followed by botanical herbal treatments on open-air stilt pavilions.</p>
+            <a class="exp-cta" href="#reserve">Plan a wellness journey →</a>
+          </div>
+        </div>
+
+        <!-- Exp 3 -->
+        <div class="exp-card">
+          <div class="exp-img-box">
+            <img src="assets/night-lagoon.webp" alt="Bioluminescent lagoon beneath the stars" class="exp-img" loading="lazy">
+            <div class="exp-overlay"></div>
+          </div>
+          <div class="exp-content">
+            <h3 class="exp-title">Bioluminescent Midnight Lagoon Drift</h3>
+            <p class="exp-desc">Glide through glowing nocturnal waters illuminated by millions of glowing phytoplankton and nocturnal marine life.</p>
+            <a class="exp-cta" href="#reserve">Explore the depths →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SECTION 5: GASTRONOMY -->
+  <section class="section gastro-section editorial-section" id="gastronomy" data-index="05">
+    <div class="section-container">
+      <div class="gastro-split">
+        <div class="gastro-text">
+          <h2 class="section-title">Dining suspended over coral lagoons & starlight.</h2>
+          <p class="gastro-p">Every plate is an intimate celebration of the Indian Ocean's rich harvests and organic island bounty. Savor freshly plucked herbs from our hydroponic gardens and sustainably line-caught yellowfin tuna.</p>
+          
+          <div class="dining-list">
+            <div class="dining-item">
+              <h3 class="dining-heading">L'Azura Ocean Pavilion</h3>
+              <p>Modern coastal Mediterranean dining with cellar sommelier pairings overlooking the infinite sunset.</p>
+            </div>
+            <div class="dining-item">
+              <h3 class="dining-heading">Kaashi Spice Sanctuary</h3>
+              <p>Wood-fired tandoor and clay-pot Maldivian traditions beneath towering tropical banyan trees.</p>
+            </div>
+            <div class="dining-item">
+              <h3 class="dining-heading">The Amber Reef Bar</h3>
+              <p>Artisan botanical cocktails and vintage bubbly on oversized daybeds perched directly above the lagoon.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="gastro-visual">
+          <div class="gastro-img-frame">
+            <img src="assets/dining.jpg" alt="Oceanfront dining table" class="gastro-main-img" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SECTION 6: CONCIERGE & FOOTER -->
+  <section class="section reserve-section editorial-section" id="reserve" data-index="06">
+    <div class="section-container">
+      <div class="reserve-box">
+        <div class="reserve-inner">
+          <h2 class="reserve-title">Begin your chapter at AURA.</h2>
+          <p class="reserve-desc">Allow our Island Concierge to curate every detail of your arrival, from private seaplane transfers to bespoke villa dietary preferences.</p>
+          
+          <div class="reserve-action-row">
+            <button class="btn-reserve-cta" id="btnFooterReserve">Plan your island escape</button>
+            <a href="mailto:concierge@aura-maldives.com" class="btn-reserve-contact">Contact Private Concierge</a>
+          </div>
+
+          <div class="island-stats">
+            <div class="stat-col">
+              <span class="stat-val">29°C</span>
+              <span class="stat-lbl">Gentle Lagoon Breeze</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-col">
+              <span class="stat-val">25 Min</span>
+              <span class="stat-lbl">Seaplane from Malé</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-col">
+              <span class="stat-val">100%</span>
+              <span class="stat-lbl">Protected Marine Reserve</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <footer class="site-footer">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <div class="footer-logo">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="sun-icon footer-sun" aria-hidden="true">
+            <!-- Center ring and subtle inner circle -->
+            <circle cx="24" cy="24" r="5.5" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.9"/>
+            <circle cx="24" cy="24" r="2" fill="currentColor" fill-opacity="0.7"/>
+            <!-- Radiating Sunburst Rays -->
+            <g stroke="currentColor" stroke-width="1.1" stroke-linecap="round" opacity="0.85">
+              <!-- 24 rays -->
+              <line x1="24" y1="7" x2="24" y2="13"/>
+              <line x1="24" y1="35" x2="24" y2="41"/>
+              <line x1="7" y1="24" x2="13" y2="24"/>
+              <line x1="35" y1="24" x2="41" y2="24"/>
+              
+              <line x1="12" y1="12" x2="16.2" y2="16.2"/>
+              <line x1="31.8" y1="31.8" x2="36" y2="36"/>
+              <line x1="36" y1="12" x2="31.8" y2="16.2"/>
+              <line x1="16.2" y1="31.8" x2="12" y2="36"/>
+              
+              <line x1="17.8" y1="8.5" x2="19.5" y2="14.2"/>
+              <line x1="28.5" y1="33.8" x2="30.2" y2="39.5"/>
+              <line x1="8.5" y1="30.2" x2="14.2" y2="28.5"/>
+              <line x1="33.8" y1="19.5" x2="39.5" y2="17.8"/>
+
+              <line x1="30.2" y1="8.5" x2="28.5" y2="14.2"/>
+              <line x1="19.5" y1="33.8" x2="17.8" y2="39.5"/>
+              <line x1="8.5" y1="17.8" x2="14.2" y2="19.5"/>
+              <line x1="33.8" y1="28.5" x2="39.5" y2="30.2"/>
+
+              <line x1="10.2" y1="18.2" x2="15.2" y2="20.2"/>
+              <line x1="32.8" y1="27.8" x2="37.8" y2="29.8"/>
+              <line x1="18.2" y1="37.8" x2="20.2" y2="32.8"/>
+              <line x1="27.8" y1="15.2" x2="29.8" y2="10.2"/>
+
+              <line x1="10.2" y1="29.8" x2="15.2" y2="27.8"/>
+              <line x1="32.8" y1="20.2" x2="37.8" y2="18.2"/>
+              <line x1="29.8" y1="37.8" x2="27.8" y2="32.8"/>
+              <line x1="20.2" y1="15.2" x2="18.2" y2="10.2"/>
+            </g>
+          </svg>
+              <span class="logo-text">A U R A</span>
+            </div>
+            <p class="footer-tagline">North Malé Atoll, Republic of Maldives</p>
+          </div>
+
+          <div class="footer-nav-cols">
+            <div class="f-col">
+              <h3 class="footer-heading">The Resort</h3>
+              <a href="#the-island">The Island</a>
+              <a href="#your-stay">Residences</a>
+              <a href="#experiences">Experiences</a>
+              <a href="#gastronomy">Gastronomy</a>
+            </div>
+            <div class="f-col">
+              <h3 class="footer-heading">Curations</h3>
+              <a href="#">Wellness & Spa</a>
+              <a href="#">Private Yacht</a>
+              <a href="#">Weddings & Vows</a>
+              <a href="#">Sustainability</a>
+            </div>
+            <div class="f-col">
+              <h3 class="footer-heading">Inquiries</h3>
+              <a href="tel:+9606648800">+960 664 8800</a>
+              <a href="mailto:escape@aura-resort.com">escape@aura-resort.com</a>
+              <a href="#">Guest Experience Portal</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom-line">
+          <span>© 2025 AURA Maldives Resort. All rights reserved.</span>
+          <div class="f-legal">
+            <a href="#">Privacy Policy</a>
+            <span>·</span>
+            <a href="#">Terms of Stay</a>
+            <span>·</span>
+            <a href="#">Cookie Preferences</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- Interactive Modal: Plan Your Escape Drawer -->
+  <div class="modal-backdrop" id="escapeModalBackdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-eyebrow">AURA BESPOKE INQUIRY</span>
+          <h3 class="modal-title">Plan Your Island Escape</h3>
+        </div>
+        <button class="modal-close-btn" id="closeEscapeModal">✕</button>
+      </div>
+
+      <form class="modal-form" id="escapeForm" onsubmit="event.preventDefault(); handleEscapeSubmit();">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" placeholder="e.g. Lord & Lady Ashton" required>
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" placeholder="name@domain.com" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Arrival Window</label>
+            <input type="text" value="April 2025 — 7 Nights" readonly>
+          </div>
+          <div class="form-group">
+            <label>Preferred Residence</label>
+            <select>
+              <option>Sunset Overwater Villa with Pool</option>
+              <option>Grand Ocean Pavilion</option>
+              <option>Beachfront Coral Sanctuary</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Special Requests / Celebrations</label>
+          <textarea rows="3" placeholder="Anniversary, bespoke dietary preferences, private seaplane charter..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit-inquiry">Submit Bespoke Inquiry →</button>
+        <p class="modal-note">Our Private Island Thakuru concierge will respond within 4 hours.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Interactive Modal: Villa Details Preview -->
+  <div class="modal-backdrop" id="villaModalBackdrop">
+    <div class="modal-card villa-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-eyebrow">RESIDENCE SHOWCASE</span>
+          <h3 class="modal-title" id="villaModalTitle">Sunset Overwater Villa with Pool</h3>
+        </div>
+        <button class="modal-close-btn" id="closeVillaModal">✕</button>
+      </div>
+
+      <div class="villa-modal-body">
+        <div class="villa-modal-img-box">
+          <img src="assets/villa-bedroom.jpg" alt="Villa Details" id="villaModalImg" class="villa-modal-img">
+        </div>
+        <div class="villa-modal-details">
+          <div class="v-detail-stat">
+            <span class="v-val">285 m²</span>
+            <span class="v-lbl">Living Space</span>
+          </div>
+          <div class="v-detail-stat">
+            <span class="v-val">Lagoon Sunset</span>
+            <span class="v-lbl">Orientation</span>
+          </div>
+          <div class="v-detail-stat">
+            <span class="v-val">Private Pool</span>
+            <span class="v-lbl">Freshwater Infinity</span>
+          </div>
+          <p class="v-detail-desc" id="villaModalDesc">
+            Suspended directly over turquoise waters, this villa features handcrafted teak floors, vaulted alang-alang thatched ceiling, a freestanding ocean-view soaking tub, private catamaran hammock nets over the sea, and direct ladder access into the living coral reef.
+          </p>
+          <button class="btn-reserve-cta" id="btnVillaSelectDate">Select Dates For This Villa →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast-notification" id="toastNotification">
+    <span class="toast-icon">✓</span>
+    <span class="toast-msg" id="toastMsg">Dates updated successfully</span>
+  </div>
+
+  <!-- Main JavaScript File -->
+  <script src="app.js"></script>
+  <script src="editorial.js"></script>
+</body>
+</html>
