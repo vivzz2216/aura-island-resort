@@ -10,3 +10,9 @@
 
 @media(max-width:650px){.booking-field .field-label,.booking-field .field-value{font-size:.7rem}}
 @media(max-width:360px){.site-header .btn-escape{font-size:.68rem}}
+
+/* Keep the reef caption within its section and separate the dining and reservation imagery. */
+.island-editorial { row-gap: clamp(44px, 6vw, 86px); padding-bottom: clamp(60px, 7vw, 100px); }
+.reef-feature { margin-top: 0; }
+.gastro-section { padding-bottom: clamp(64px, 7vw, 100px); }
+@media (max-width: 650px) { .island-editorial { row-gap: 38px; padding-bottom: 60px; } .gastro-section { padding-bottom: 60px; } }
