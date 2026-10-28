@@ -16,22 +16,17 @@
   <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="editorial.css">
+  <link rel="stylesheet" href="refinement.css">
 </head>
 <body>
 
   <!-- Ambient Sound Layer (Web Audio API) -->
-  <div class="audio-widget" id="audioToggle" title="Toggle Ambient Ocean Breeze">
-    <div class="sound-bars">
+  <button type="button" class="audio-widget" id="audioToggle" aria-label="Toggle ocean sound" aria-pressed="false">
+    <span class="sound-bars" aria-hidden="true">
       <span></span><span></span><span></span><span></span>
-    </div>
+    </span>
     <span class="audio-label">Sound</span>
-  </div>
-
-  <!-- Background Wallpaper Switcher (4K Generated vs Reference Original) -->
-  <div class="bg-switcher" id="bgSwitcher" title="Switch Hero Background">
-    <button class="bg-btn active" data-bg="generated">4K Island</button>
-    <button class="bg-btn" data-bg="original">Original</button>
-  </div>
+  </button>
 
   <!-- Main Fixed Navigation Bar -->
   <header class="site-header" id="siteHeader">
@@ -95,7 +90,7 @@
           <span>Plan your escape</span>
           <span class="btn-arrow">→</span>
         </button>
-        <button class="mobile-menu-toggle" id="menuToggle" aria-label="Toggle Menu">
+        <button class="mobile-menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileDrawer">
           <span></span><span></span>
         </button>
       </div>
@@ -103,7 +98,7 @@
   </header>
 
   <!-- Mobile Menu Drawer -->
-  <div class="mobile-drawer" id="mobileDrawer">
+  <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true" inert>
     <div class="drawer-content">
       <a href="#the-island" class="drawer-link">The island</a>
       <a href="#your-stay" class="drawer-link">Your stay</a>
@@ -161,7 +156,7 @@
           </div>
           <div class="field-text">
             <span class="field-label">Arrival</span>
-            <span class="field-value" id="arrivalValue">Apr 24, 2025</span>
+            <span class="field-value" id="arrivalValue">Choose date</span>
           </div>
           <div class="field-chevron">
             <svg viewBox="0 0 20 20" fill="currentColor" class="chevron-svg">
@@ -189,7 +184,7 @@
           </div>
           <div class="field-text">
             <span class="field-label">Departure</span>
-            <span class="field-value" id="departureValue">May 1, 2025</span>
+            <span class="field-value" id="departureValue">Choose date</span>
           </div>
           <div class="field-chevron">
             <svg viewBox="0 0 20 20" fill="currentColor" class="chevron-svg">
@@ -235,9 +230,9 @@
           <button class="popover-close" id="closeDatePicker">✕</button>
         </div>
         <div class="calendar-month-selector">
-          <button class="cal-nav" id="prevMonth">‹</button>
-          <span class="cal-month-name" id="currentMonthLabel">April 2025</span>
-          <button class="cal-nav" id="nextMonth">›</button>
+          <button class="cal-nav" id="prevMonth" aria-label="Previous month">‹</button>
+          <span class="cal-month-name" id="currentMonthLabel"></span>
+          <button class="cal-nav" id="nextMonth" aria-label="Next month">›</button>
         </div>
         <div class="calendar-grid">
           <span class="cal-day-header">Su</span>
@@ -251,7 +246,7 @@
           <div class="cal-days-body" id="calDaysBody"></div>
         </div>
         <div class="calendar-footer">
-          <span class="cal-range-hint">7 nights selected: Apr 24 – May 1</span>
+          <span class="cal-range-hint" id="calRangeHint">Select your arrival date</span>
           <button class="btn-popover-apply" id="applyDates">Apply Dates</button>
         </div>
       </div>
@@ -321,6 +316,7 @@
     <div class="section-container island-editorial">
       <div class="island-intro"><h2 class="section-title">A sanctuary formed by nature,<br><em>refined by human touch.</em></h2><p class="island-location">North Malé Atoll · Maldives</p><a class="aura-text-link" href="#your-stay">Find your place on the island <span>↗</span></a></div>
       <div class="island-notes"><article><h3>Living House Reef</h3><p>Direct access to an ancient, flourishing coral barrier ecosystem with resident hawksbill sea turtles and gentle manta rays.</p></article><article><h3>Biophilic Architecture</h3><p>Naturally sourced teak, alang-alang thatch, and local stone. Spaces designed to breathe with the ocean breeze.</p></article><article><h3>Total Seclusion</h3><p>Only 24 private overwater and beachfront sanctuaries. Unmatched silence, stillness, and space, with a dedicated Island Thakuru.</p></article></div>
+      <figure class="reef-feature"><img src="assets/aura-reef.webp" alt="Sunlight over a coral reef in clear turquoise water" loading="lazy"><figcaption><span>The living house reef</span><a href="#experiences">Discover the island <span aria-hidden="true">↗</span></a></figcaption></figure>
     </div>
   </section>
 
@@ -344,7 +340,7 @@
         <!-- Villa 1 -->
         <div class="villa-card" data-category="water">
           <div class="villa-img-wrapper">
-            <img src="assets/villa-bedroom.jpg" alt="Sunset Overwater Villa" class="villa-img" loading="lazy">
+            <img src="assets/aura-villa.webp" alt="Overwater villa terrace overlooking the lagoon" class="villa-img" loading="lazy">
             <span class="villa-badge">Most Revered</span>
           </div>
           <div class="villa-info">
@@ -637,7 +633,7 @@
         <div class="form-row">
           <div class="form-group">
             <label>Arrival Window</label>
-            <input type="text" value="April 2025 — 7 Nights" readonly>
+            <input type="text" id="inquiryArrival" value="Select dates above" readonly>
           </div>
           <div class="form-group">
             <label>Preferred Residence</label>
@@ -655,7 +651,7 @@
         </div>
 
         <button type="submit" class="btn-submit-inquiry">Submit Bespoke Inquiry →</button>
-        <p class="modal-note">Our Private Island Thakuru concierge will respond within 4 hours.</p>
+        <p class="modal-note">This is a concept experience. The inquiry form does not send reservations.</p>
       </form>
     </div>
   </div>

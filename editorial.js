@@ -4,5 +4,6 @@ if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
  document.querySelectorAll('.island-intro,.island-notes,.editorial-section .section-header,.villa-card,.exp-card,.gastro-text,.reserve-inner').forEach(el=>reveal.observe(el));
 }
 
-const heroVisibility=new IntersectionObserver(([entry])=>document.body.classList.toggle('reading-content',!entry.isIntersecting),{threshold:0});
-heroVisibility.observe(document.getElementById('hero'));
+const updateReadingState = () => document.body.classList.toggle('reading-content', window.scrollY > document.getElementById('hero').offsetHeight * .35);
+window.addEventListener('scroll', updateReadingState, { passive:true });
+updateReadingState();

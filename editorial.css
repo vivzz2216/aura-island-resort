@@ -5,7 +5,7 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.editorial-section *{animation:none!important;transition:none!important}.hero-section *{animation-duration:.01ms!important;animation-delay:0ms!important;transition:none!important}}
 
 /* Fixed hero controls recede when reading the editorial content. */
-body.reading-content .bg-switcher,body.reading-content .audio-widget{visibility:hidden;pointer-events:none}
+body.reading-content .audio-widget{visibility:hidden;pointer-events:none}
 .modal-card{max-height:90dvh;overflow-y:auto;overscroll-behavior:contain}
 @media(max-width:650px){.modal-backdrop{padding:16px}.modal-card{padding:24px}.villa-modal-body{display:flex;flex-direction:column}.villa-modal-img-box{height:190px}.modal-close-btn{flex-shrink:0}}
 

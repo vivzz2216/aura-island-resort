@@ -115,44 +115,6 @@ body {
   color: rgba(255, 255, 255, 0.8);
 }
 
-/* Background Wallpaper Switcher */
-.bg-switcher {
-  position: fixed;
-  top: 1.5rem;
-  right: 1.5rem;
-  z-index: 99;
-  display: flex;
-  background: rgba(3, 25, 45, 0.65);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: var(--radius-full);
-  padding: 3px;
-  opacity: 0.65;
-  transition: opacity 0.3s ease;
-}
-
-.bg-switcher:hover {
-  opacity: 1;
-}
-
-.bg-btn {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.7);
-  padding: 5px 12px;
-  font-size: 0.75rem;
-  font-family: var(--font-sans);
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.bg-btn.active {
-  background: var(--aura-cyan);
-  color: var(--aura-dark);
-  font-weight: 600;
-}
-
 /* ==========================================================================
    SITE HEADER & NAVIGATION
    ========================================================================== */

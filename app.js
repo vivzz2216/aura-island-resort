@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. DOM Elements Selection
   const siteHeader = document.getElementById('siteHeader');
   const heroBg = document.getElementById('heroBg');
-  const bgSwitcher = document.getElementById('bgSwitcher');
   const audioToggle = document.getElementById('audioToggle');
   const indCurrent = document.getElementById('indCurrent');
   const menuToggle = document.getElementById('menuToggle');
@@ -45,31 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnVillaSelectDate = document.getElementById('btnVillaSelectDate');
   const teaserCard = document.getElementById('teaserCard');
 
-  // ==========================================================================
-  // 2. HERO BACKGROUND SWITCHER (4K AI Photorealistic vs Original Reference)
-  // ==========================================================================
-  if (bgSwitcher) {
-    const bgBtns = bgSwitcher.querySelectorAll('.bg-btn');
-    bgBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        bgBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const bgType = btn.getAttribute('data-bg');
-        if (bgType === 'original') {
-          heroBg.style.backgroundImage = "url('assets/reference-original.png')";
-          showToast('Hero view switched to Original Reference');
-        } else {
-          heroBg.style.backgroundImage = "url('assets/hero-island.jpg')";
-          showToast('Hero view switched to 4K Island Aerial');
-        }
-      });
-    });
+  // The hero uses one clear, consistent island view.
+  if (heroBg && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    setTimeout(() => heroBg.classList.add('zoom'), 100);
   }
-
-  // Subtle Ken Burns slow zoom
-  setTimeout(() => {
-    if (heroBg) heroBg.classList.add('zoom');
-  }, 100);
 
   // ==========================================================================
   // 3. HEADER SCROLL & MOBILE MENU
@@ -84,18 +62,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (menuToggle && mobileDrawer) {
     menuToggle.addEventListener('click', () => {
-      mobileDrawer.classList.toggle('open');
+      const isOpen = mobileDrawer.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+      mobileDrawer.setAttribute('aria-hidden', String(!isOpen));
+      mobileDrawer.inert = !isOpen;
     });
 
     drawerLinks.forEach(link => {
       link.addEventListener('click', () => {
         mobileDrawer.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        mobileDrawer.setAttribute('aria-hidden', 'true');
+        mobileDrawer.inert = true;
       });
     });
 
     if (drawerEscapeBtn) {
       drawerEscapeBtn.addEventListener('click', () => {
         mobileDrawer.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        mobileDrawer.setAttribute('aria-hidden', 'true');
+        mobileDrawer.inert = true;
         openModal(escapeModalBackdrop);
       });
     }
@@ -160,56 +147,71 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================================
   // 5. DATE PICKER POPOVER & CALENDAR GENERATOR
   // ==========================================================================
-  let selectedStart = 24; // April 24
-  let selectedEnd = 1;    // May 1 (cross month)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  let selectedStart = null;
+  let selectedEnd = null;
+  let visibleMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  let selectingDate = 'arrival';
+  const formatDate = date => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const monthLabel = document.getElementById('currentMonthLabel');
+  const rangeHint = document.getElementById('calRangeHint');
+  const inquiryArrival = document.getElementById('inquiryArrival');
 
-  function renderCalendar() {
-    const calDaysBody = document.getElementById('calDaysBody');
-    if (!calDaysBody) return;
-    calDaysBody.innerHTML = '';
-
-    // April 2025 starts on Tuesday (offset 2: Su=0, Mo=1, Tu=2)
-    const firstDayOffset = 2;
-    const totalDaysInApril = 30;
-
-    // Blank cells before day 1
-    for (let i = 0; i < firstDayOffset; i++) {
-      const emptyCell = document.createElement('div');
-      emptyCell.className = 'cal-day empty';
-      calDaysBody.appendChild(emptyCell);
-    }
-
-    // Days 1 through 30
-    for (let d = 1; d <= totalDaysInApril; d++) {
-      const dayEl = document.createElement('div');
-      dayEl.className = 'cal-day';
-      dayEl.textContent = d;
-
-      if (d === selectedStart) {
-        dayEl.classList.add('selected', 'range-start');
-      } else if (d > selectedStart) {
-        dayEl.classList.add('in-range');
-      }
-
-      dayEl.addEventListener('click', () => {
-        selectedStart = d;
-        arrivalValue.textContent = `Apr ${d}, 2025`;
-        renderCalendar();
-      });
-
-      calDaysBody.appendChild(dayEl);
+  function updateDateLabels() {
+    arrivalValue.textContent = selectedStart ? formatDate(selectedStart) : 'Choose date';
+    departureValue.textContent = selectedEnd ? formatDate(selectedEnd) : 'Choose date';
+    if (selectedStart && selectedEnd) {
+      const nights = Math.round((Date.UTC(selectedEnd.getFullYear(), selectedEnd.getMonth(), selectedEnd.getDate()) - Date.UTC(selectedStart.getFullYear(), selectedStart.getMonth(), selectedStart.getDate())) / 86400000);
+      rangeHint.textContent = `${nights} night${nights === 1 ? '' : 's'} selected`;
+      if (inquiryArrival) inquiryArrival.value = `${formatDate(selectedStart)} – ${formatDate(selectedEnd)} · ${nights} nights`;
+    } else {
+      rangeHint.textContent = selectedStart ? 'Select a departure date' : 'Select your arrival date';
+      if (inquiryArrival) inquiryArrival.value = 'Select dates above';
     }
   }
 
-  renderCalendar();
+  function renderCalendar() {
+    const days = document.getElementById('calDaysBody');
+    if (!days) return;
+    days.innerHTML = '';
+    monthLabel.textContent = visibleMonth.toLocaleDateString('en-US', {month:'long', year:'numeric'});
+    const year = visibleMonth.getFullYear(), month = visibleMonth.getMonth();
+    const offset = new Date(year, month, 1).getDay(), total = new Date(year, month + 1, 0).getDate();
+    for (let i=0;i<offset;i++) { const empty=document.createElement('span');empty.className='cal-day empty';days.appendChild(empty); }
+    for (let day=1;day<=total;day++) {
+      const date=new Date(year,month,day), button=document.createElement('button');
+      button.type='button';button.className='cal-day';button.textContent=day;
+      button.setAttribute('aria-label',formatDate(date));button.disabled=date<today;
+      if (selectedStart && date.getTime()===selectedStart.getTime()) button.classList.add('selected','range-start');
+      if (selectedEnd && date.getTime()===selectedEnd.getTime()) button.classList.add('selected','range-end');
+      if (selectedStart && selectedEnd && date>selectedStart && date<selectedEnd) button.classList.add('in-range');
+      button.addEventListener('click',(event)=>{
+        event.stopPropagation();
+        if (selectingDate==='arrival' || !selectedStart || date<=selectedStart) {
+          selectedStart=date;selectedEnd=null;selectingDate='departure';
+        } else { selectedEnd=date;selectingDate='arrival'; }
+        updateDateLabels();renderCalendar();
+      });
+      days.appendChild(button);
+    }
+  }
+  document.getElementById('prevMonth')?.addEventListener('click',()=>{visibleMonth=new Date(visibleMonth.getFullYear(),visibleMonth.getMonth()-1,1);renderCalendar();});
+  document.getElementById('nextMonth')?.addEventListener('click',()=>{visibleMonth=new Date(visibleMonth.getFullYear(),visibleMonth.getMonth()+1,1);renderCalendar();});
+  updateDateLabels();renderCalendar();
 
   // Toggle Date Popover
   function openDatePopover(type) {
     closeAllPopovers();
+    selectingDate = type;
+    visibleMonth = new Date((type === 'departure' && selectedEnd ? selectedEnd : selectedStart || today).getFullYear(), (type === 'departure' && selectedEnd ? selectedEnd : selectedStart || today).getMonth(), 1);
+    renderCalendar();
     datePickerPopover.classList.add('open');
     if (type === 'arrival') arrivalField.classList.add('active');
     if (type === 'departure') departureField.classList.add('active');
   }
+
+  [arrivalField, departureField, guestsField].forEach(field => field?.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); field.click(); } }));
 
   if (arrivalField) {
     arrivalField.addEventListener('click', (e) => {
@@ -238,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
       datePickerPopover.classList.remove('open');
       arrivalField.classList.remove('active');
       departureField.classList.remove('active');
-      showToast('Dates confirmed: Apr 24 – May 1, 2025');
+      showToast(selectedStart && selectedEnd ? `Dates selected: ${formatDate(selectedStart)} – ${formatDate(selectedEnd)}` : 'Select both arrival and departure dates.');
     });
   }
 
@@ -374,6 +376,8 @@ document.addEventListener('DOMContentLoaded', () => {
   exploreBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const villaType = btn.getAttribute('data-villa');
+      const villaImage = document.getElementById('villaModalImg');
+      if (villaImage) { villaImage.src = villaType === 'sunset-overwater' ? 'assets/aura-villa.webp' : villaType === 'grand-lagoon' ? 'assets/villa-bedroom.jpg' : 'assets/wellness.jpg'; villaImage.alt = btn.closest('.villa-card')?.querySelector('.villa-title')?.textContent || 'AURA residence'; }
       if (villaType === 'sunset-overwater') {
         villaModalTitle.textContent = 'Sunset Overwater Villa with Pool';
         villaModalDesc.textContent = 'Suspended directly over calm turquoise lagoon waters, featuring panoramic floor-to-ceiling glass, an overwater catamaran hammock, direct reef ladder, and private sundeck plunge pool.';
@@ -424,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Global escape form handler
   window.handleEscapeSubmit = function() {
     closeModal(escapeModalBackdrop);
-    showToast('Your inquiry has been received. Our concierge will contact you shortly.');
+    showToast('Concept preview: no inquiry was sent.');
   };
 
   // Toast Notification Helper
@@ -512,6 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initOceanAudio();
         isPlayingAudio = true;
         audioToggle.classList.add('playing');
+        audioToggle.setAttribute('aria-pressed', 'true');
         showToast('Playing ambient ocean sound');
         return;
       }
@@ -523,11 +528,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isPlayingAudio) {
         oceanNode.masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
         audioToggle.classList.remove('playing');
+        audioToggle.setAttribute('aria-pressed', 'false');
         isPlayingAudio = false;
         showToast('Muted ambient sound');
       } else {
         oceanNode.masterGain.gain.setTargetAtTime(0.45, audioCtx.currentTime, 0.2);
         audioToggle.classList.add('playing');
+        audioToggle.setAttribute('aria-pressed', 'true');
         isPlayingAudio = true;
         showToast('Playing ambient ocean sound');
       }
@@ -540,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroSection = document.getElementById('hero');
   const heroTextBlock = document.querySelector('.hero-text-block');
 
-  if (heroSection && heroTextBlock && window.innerWidth > 992) {
+  if (heroSection && heroTextBlock && window.innerWidth > 992 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     heroSection.addEventListener('mousemove', (e) => {
       const { clientX, clientY } = e;
       const xPos = (clientX / window.innerWidth - 0.5) * 20;
